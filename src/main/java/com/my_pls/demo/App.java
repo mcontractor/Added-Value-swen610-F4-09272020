@@ -1,5 +1,6 @@
 package com.my_pls.demo;
 
+import com.mongodb.*;
 
 import spark.ModelAndView;
 import spark.TemplateEngine;
@@ -7,16 +8,15 @@ import spark.template.freemarker.FreeMarkerEngine;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.net.URLDecoder;
 
 import static spark.Spark.*;
 
+
+
 public class App {
-    public static String firebase_auth_json = "json_auth/mypls-added-value-firebase-adminsdk-6j3xx-5271a3d0db.json";
+    static int userKey = 001; //used as a database key for users
 
     private static Map<String,String> extractFields(String body){
         try{
@@ -40,11 +40,17 @@ public class App {
 
         port(8080);
 
+        MongoClient mongoClient = new MongoClient();
+        //MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
+        //MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
+        DB database = mongoClient.getDB("myPLS");//cheange from test when done inputting garbage data
+        DBCollection collection = database.getCollection("users");
+
+
+
         final TemplateEngine engine = new FreeMarkerEngine();
         internalServerError("<html><body>Something went wrong!</body></html>");
         staticFileLocation("/public"); //So that it has access to the pubic resources(stylesheets, etc.)
-
-
 
         CurrUser user_current = new CurrUser();
 
@@ -166,6 +172,14 @@ public class App {
                     user_current.lastName = formFields.get("lname");
                     user_current.email = formFields.get("email");
                     user_current.password = formFields.get("pass");
+
+                    DBObject user = new BasicDBObject("_id", userKey)
+                            .append("fname", formFields.get("fname"))
+                            .append("lname", formFields.get("lname"))
+                            .append("email", email)
+                            .append("password",user_current.password);//store as hash
+                    userKey++;
+                    collection.insert(user);
                     response.redirect("/verify-register");
                 } else {
                     map.put("fname",formFields.get("firstName"));

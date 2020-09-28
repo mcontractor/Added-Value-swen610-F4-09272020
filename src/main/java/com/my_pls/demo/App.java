@@ -1,16 +1,6 @@
 package com.my_pls.demo;
 
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.api.gax.paging.Page;
-import com.google.cloud.storage.Bucket;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
-import com.google.common.collect.Lists;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.UserRecord;
+
 import spark.ModelAndView;
 import spark.TemplateEngine;
 import spark.template.freemarker.FreeMarkerEngine;
@@ -46,7 +36,7 @@ public class App {
 //    Map<String,String> map = extractFields(request.body());
 //        return map;
 
-    public static void main(String[] args) throws IOException, FirebaseAuthException {
+    public static void main(String[] args) throws IOException {
 
         port(8080);
 
@@ -55,16 +45,6 @@ public class App {
         staticFileLocation("/public"); //So that it has access to the pubic resources(stylesheets, etc.)
 
 
-        GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(firebase_auth_json))
-                .createScoped(Lists.newArrayList("https://www.googleapis.com/auth/cloud-platform"));
-        FirebaseOptions options = FirebaseOptions.builder()
-                .setCredentials(credentials)
-                .setDatabaseUrl("https://mypls-added-value.firebaseio.com/")
-                .build();
-
-        FirebaseApp.initializeApp(options);
-        FirebaseAuth mAuth;
-        mAuth = FirebaseAuth.getInstance();
 
         CurrUser user_current = new CurrUser();
 
@@ -175,15 +155,13 @@ public class App {
                     map.put("errorPassMatch", "display:list-item;margin-left:5%");
                 }
                 if (flag) {
-                    UserRecord.CreateRequest new_user = new UserRecord.CreateRequest();
+
                     String email = formFields.get("email");
                     email = URLDecoder.decode(email,"UTF-8");
-                    new_user.setEmail(email);
+
 
                     String display_name = formFields.get("fname") +" " +  formFields.get("lname");
-                    new_user.setDisplayName(display_name);
-                    new_user.setPassword(formFields.get("pass"));
-                    mAuth.createUser(new_user);
+
                     user_current.firstName = formFields.get("fname");
                     user_current.lastName = formFields.get("lname");
                     user_current.email = formFields.get("email");
@@ -377,18 +355,4 @@ public class App {
             return type;
         }
     }
-    static void authExplicit(String jsonPath) throws IOException {
-        // You can specify a credential file by providing a path to GoogleCredentials.
-        // Otherwise credentials are read from the GOOGLE_APPLICATION_CREDENTIALS environment variable.
-        GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(firebase_auth_json))
-                .createScoped(Lists.newArrayList("https://www.googleapis.com/auth/cloud-platform"));
-        Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
-
-        System.out.println("Buckets:");
-        Page<Bucket> buckets = storage.list();
-        for (Bucket bucket : buckets.iterateAll()) {
-            System.out.println(bucket.toString());
-        }
-    }//test
-
 }

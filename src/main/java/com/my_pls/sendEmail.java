@@ -6,7 +6,7 @@ import net.sargue.mailgun.Mail;
 // Resources from https://github.com/sargue/mailgun
 
 public class sendEmail{
-    public static void sendEmail_content(String senderEmail,String subject, String content) {
+    public void sendEmail_content(String senderEmail,String subject, String content) {
         Configuration configuration = new Configuration()
                 .domain("bestspeaker.lk")
                 .apiKey("key-f64cc3ddd3dca59f8eccbc3b5b85fa02")

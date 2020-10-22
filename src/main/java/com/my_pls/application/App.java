@@ -424,6 +424,7 @@ public class App {
             map.forEach((k,v)->map.put(k,v));
             if (map.containsKey("refresh")) response.redirect("/discussion-groups");
             map.put("role", role);
+            System.out.println(formFields);
             return new ModelAndView(map,"discussionGroups.ftl");
         }),engine);
 

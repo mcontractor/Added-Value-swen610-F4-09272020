@@ -23,7 +23,7 @@
                         <#list groups as g>
                             <tr>
                                 <th scope="row">
-                                    <a class="text-muted" href="/discussion/group-desc">${g.name}</a>
+                                    <button class="button-look-text text-muted" name="view" value="${g.id}">${g.name}</button>
                                     <#if g.privacy??>
                                         <button type="button" class="btn-download" style="margin-left: 2%">
                                             <i class="fa fa-lock"></i>
@@ -121,7 +121,7 @@
                         <#list requestedGroups as k, v>
                             <tr>
                                 <th scope="row">
-                                    <a class="text-muted" href="/discussion/group-desc">${v.name}</a>
+                                    <a class="text-muted">${v.name}</a>
                                 </th>
                                 <td>
                                     <button name="leave" value="${k}" style="float: right" class="btn btn-primary" type="submit">Cancel</button>

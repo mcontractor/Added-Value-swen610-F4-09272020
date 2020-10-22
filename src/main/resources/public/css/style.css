@@ -58,3 +58,10 @@
 .font-size-larger {
     font-size: larger;
 }
+
+.button-look-text {
+    border: none !important;
+    background: none !important;
+    padding: 0 !important;
+    font-weight: 700;
+}
